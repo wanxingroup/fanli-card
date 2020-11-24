@@ -1,0 +1,187 @@
+syntax = "proto3";
+
+package card.pkg.rpc.protos;
+
+option go_package = "protos";
+
+import "card_common.proto";
+
+service CardController {
+
+    // 获取权益卡详情
+    rpc GetCard (GetCardRequest) returns (GetCardReply) {
+    }
+
+    // 获取权益卡列表
+    rpc GetCardList (GetCardListRequest) returns (GetCardListReply) {
+    }
+
+    // 创建权益卡
+    rpc CreateCard (CreateCardRequest) returns (CreateCardReply) {
+    }
+
+    // 修改权益卡
+    rpc ModifyCard (ModifyCardRequest) returns (ModifyCardReply) {
+    }
+
+    // 删除权益卡
+    rpc RemoveCard (RemoveCardRequest) returns (RemoveCardReply) {
+    }
+
+    // 设置权益卡的选项列表
+    rpc SetCardItems (SetCardItemsRequest) returns (SetCardItemsReply) {
+    }
+
+    // 设置权益卡状态
+    rpc SetCardStatus(SetCardStatusRequest) returns (SetCardStatusReply) {
+    }
+
+    // 获取用户权益卡
+    rpc GetUserCardList(GetUserCardListRequest) returns (GetUserCardListReply) {
+    }
+}
+
+enum CardStatus {
+    All = 0;    //所有
+    Unused = 1; //未使用
+    Inuse = 2; //使用中
+}
+
+message GetCardRequest {
+    uint64 cardId = 1;
+    uint64 shopId = 2;
+}
+
+message GetCardReply {
+    Error err = 1;
+    CardInformation cardInformation = 2;
+}
+
+message GetCardListRequest {
+    uint64 shopId = 1;
+    CardStatus status = 2;
+    uint64 page = 3;
+    uint64 pageSize = 4;
+    bool withItemDetail = 5;
+}
+
+message GetCardListReply {
+    Error err = 1;
+    repeated CardInformation cardInformationList = 2;
+    uint64 count = 3;
+}
+
+message CreateCardRequest {
+    uint64 shopId = 1;
+    string name = 2;
+    string description = 3;
+    string backgroundImage = 4;
+    uint32 sort = 5;
+}
+
+message CreateCardReply {
+    Error err = 1;
+    uint64 cardId = 2;
+}
+
+message ModifyCardInformation {
+    uint64 cardId = 1;
+    string name = 2;
+    string description = 3;
+    string backgroundImage = 4;
+    uint32 sort = 5;
+}
+
+message ModifyCardRequest {
+    ModifyCardInformation Card = 1;
+}
+
+message ModifyCardReply {
+    Error err = 1;
+    uint64 cardId = 2;
+}
+
+message CardInformation {
+    uint64 cardId = 1;
+    uint64 shopId = 2;
+    string name = 3;
+    string description = 4;
+    string backgroundImage = 5;
+    CardStatus status = 6;
+    uint32 sort = 7;
+    repeated ItemInformation items = 8;
+    int64 createTime = 9; // 创建时间戳（单位：秒）
+}
+
+message ItemInformation {
+    uint64 itemId = 1;
+    string name = 2;
+    string description = 3;
+    uint64 price = 4;
+    uint64 renewPrice = 5;
+    uint32 validityPeriod = 6;
+    uint32 sort = 7;
+    repeated ItemCouponInformation coupons = 8;
+    uint32 FirstRebateRatio = 9;
+    uint32 SecondRebateRatio = 10;
+    repeated ItemGoodsInformation goods = 11;
+}
+
+message ItemCouponInformation {
+    uint64 couponId = 1;
+    uint64 couponCount = 2;
+}
+
+message ItemGoodsInformation {
+    // SKUId
+    uint64 goodsId = 1;
+    uint64 goodsCount = 2;
+    string goodsName = 3;
+    uint64 SPUID  = 4;
+    repeated string images = 5;
+}
+
+message RemoveCardRequest {
+    uint64 cardId = 1;
+    uint64 shopId = 2;
+}
+
+message RemoveCardReply {
+    Error err = 1;
+}
+
+message SetCardItemsRequest {
+    uint64 cardId = 1;
+    repeated ItemInformation items = 2;
+}
+
+message SetCardItemsReply {
+    uint64 cardId = 1;
+    repeated ItemInformation items = 2;
+    Error err = 3;
+}
+
+message SetCardStatusRequest {
+    uint64 cardId = 1;
+    CardStatus status = 2;
+}
+
+message SetCardStatusReply {
+    Error err = 1;
+    uint64 cardId = 2;
+}
+
+message GetUserCardListRequest {
+    uint64 userId = 1;
+    uint64 shopId = 2;
+}
+
+message GetUserCardListReply {
+    Error err = 1;
+    repeated UserCard userCardList = 2;
+}
+
+message UserCard {
+    uint64  cardId = 1;
+    uint32  ExpireTime = 2;
+}

@@ -1,0 +1,95 @@
+syntax = "proto3";
+
+package card.pkg.rpc.protos;
+
+option go_package = "protos";
+
+import "card_common.proto";
+
+service OrderController {
+    
+    // 创建购买订单
+    rpc CreateOrder (CreateOrderRequest) returns (CreateOrderReply) {
+    }
+    // 完成订单
+    rpc FinishOrder (FinishOrderRequest) returns (FinishOrderReply) {
+    }
+    // 获取订单信息
+    rpc GetOrder (GetOrderRequest) returns (GetOrderReply) {
+    }
+    // 获取订单列表
+    rpc GetOrderList (GetOrderListRequest) returns (GetOrderListReply) {
+    }
+}
+
+message CreateOrderRequest {
+    uint64 shopId = 1;
+    uint64 userId = 2;
+    uint64 cardId = 3;
+    uint64 itemId = 4;
+    uint64 amount = 5;
+    string summary = 6;
+}
+
+message CreateOrderReply {
+    uint64 orderId = 1;
+    Error err = 2;
+}
+
+message FinishOrderRequest {
+    uint64 orderId = 1;
+}
+
+message FinishOrderReply {
+    Order order = 1;
+    Error err = 2;
+}
+
+message Order {
+    uint64 orderId = 1;
+    uint64 shopId = 2;
+    uint64 userId = 3;
+    uint64 cardId = 4;
+    uint64 itemId = 5;
+    uint64 amount = 6;
+    uint32 status = 7;
+    string summary = 8;
+    uint64 createTime = 9;
+}
+
+message GetOrderRequest {
+    uint64 orderId = 1;
+}
+
+message GetOrderReply {
+    Error err = 1;
+    Order order = 2;
+}
+
+message GetOrderListRequest {
+    uint64 page = 1;
+    uint64 pageSize = 2;
+    uint64 orderId = 3;
+    uint64 shopId = 4;
+    uint64 cardId = 5;
+    uint64 itemId = 6;
+    // 创建订单的时间区间
+    TimeRange createTime = 7;
+    // 下单用户 ID
+    uint64 userId = 8;
+    // 状态
+    uint32 status = 9;
+}
+
+message GetOrderListReply {
+    Error err = 1;
+    repeated Order orderList = 2;
+    uint64 count = 3;
+}
+
+message TimeRange {
+    // 开始时间
+    uint64 startTime = 1;
+    // 结束时间
+    uint64 endTime = 2;
+}
